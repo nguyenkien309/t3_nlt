@@ -37,8 +37,8 @@ export class UserEntity extends DateAudit {
   @Column({ default: true, nullable: true })
   isActive: boolean;
 
-  // constructor(partial: Partial<UserEntity>) {
-  //   super();
-  //   Object.assign(this, partial);
-  // }
+  constructor(partial: Partial<UserEntity>) {
+    super();
+    Object.assign(this, partial);
+  }
 }

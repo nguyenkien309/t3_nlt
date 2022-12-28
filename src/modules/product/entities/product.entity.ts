@@ -27,17 +27,8 @@ export class ProductEntity extends DateAudit {
   })
   product_image: string;
 
-  // @Column({ type: 'text', array: true, default: [] })
-  // product_images: string[];
-
-  // @Column('text', { array: true })
-  // test: string[];
-
-  // @Column({
-  //   name: 'product_images',
-  //   default: '',
-  // })
-  // product_images: string[];
+  @Column({ type: 'text', array: true, default: [] })
+  product_images?: string[];
 
   constructor(partial: Partial<ProductEntity>) {
     super();
