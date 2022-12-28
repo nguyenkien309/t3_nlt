@@ -1,11 +1,20 @@
+import { UploadFileModule } from './modules/upload-file/upload-file.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
-import { ConfigModule } from './config/config.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
+import { ProductModule } from './modules/product/product.module';
 
 @Module({
-  imports: [DatabaseModule, ConfigModule],
+  imports: [
+    DatabaseModule,
+    UserModule,
+    ProductModule,
+    AuthModule,
+    UploadFileModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
