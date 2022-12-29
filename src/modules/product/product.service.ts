@@ -55,4 +55,12 @@ export class ProductService {
   async deleteProduct(productId: number) {
     return await this.ProductRepository.delete(productId);
   }
+
+  async findProductsByIds(productIds: Array<string>) {
+    const products = await this.ProductRepository.createQueryBuilder()
+      .where('id IN(:...productIds)', { productIds })
+      .getMany();
+
+    return products;
+  }
 }

@@ -1,3 +1,4 @@
+import { UserEntity } from './../../user/entities/user.entity';
 import {
   Column,
   Entity,
@@ -9,6 +10,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { DateAudit } from 'src/utils/entities/date_audit.entity';
+import { OrderProductEntity } from 'src/modules/order/entities/orders-products.entity';
 
 @Entity({ name: 'products' })
 export class ProductEntity extends DateAudit {
@@ -21,14 +23,17 @@ export class ProductEntity extends DateAudit {
   @Column({ name: 'description', nullable: true })
   description: string;
 
+  @Column({ name: 'price', nullable: true })
+  price: number;
+
   @Column({
     name: 'product_image',
     default: '',
   })
   product_image: string;
 
-  @Column({ type: 'text', array: true, default: [] })
-  product_images?: string[];
+  @OneToMany(() => OrderProductEntity, (OrderProducts) => OrderProducts.product)
+  OrderProducts: OrderProductEntity[];
 
   constructor(partial: Partial<ProductEntity>) {
     super();

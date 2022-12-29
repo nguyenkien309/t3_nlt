@@ -1,3 +1,5 @@
+import { OrderEntity } from './../../order/entities/order.entity';
+import { ProductEntity } from './../../product/entities/product.entity';
 import {
   Column,
   Entity,
@@ -36,6 +38,9 @@ export class UserEntity extends DateAudit {
 
   @Column({ default: true, nullable: true })
   isActive: boolean;
+
+  // @OneToMany(() => OrderEntity, (OrderEntity) => OrderEntity.user)
+  // order: OrderEntity[];
 
   constructor(partial: Partial<UserEntity>) {
     super();

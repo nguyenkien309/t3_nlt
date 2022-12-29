@@ -19,6 +19,11 @@ export class UserService {
     return this.UserRepository.findOne({ where: { email: email } });
   }
 
+  async findOne(id: number) {
+    const user = await this.UserRepository.findOneBy({ id: id });
+    return user;
+  }
+
   register(request: RegisterRequestDto) {
     return this.UserRepository.save(request);
   }

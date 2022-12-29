@@ -22,7 +22,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 export class UploadFileController {
   constructor(private readonly uploadService: UploadService) {}
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Post('/upload')
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile() file: Express.Multer.File) {
