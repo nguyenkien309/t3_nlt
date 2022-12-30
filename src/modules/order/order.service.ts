@@ -31,25 +31,23 @@ export class OrderService {
     console.log('totalPrice', totalPrice);
 
     const products = await this.productService.findProductsByIds(productsIds);
-    if (products.length > 0) {
-      const createOrder = new OrderEntity(createOrderDto);
-      createOrder.userId = userId;
-      createOrder.totalPrice = totalPrice;
-      console.log('createOrderDto', createOrderDto);
 
-      const saveOrder = await this.OrderRepository.save(createOrder);
+    const createOrder = new OrderEntity(createOrderDto);
+    createOrder.userId = userId;
+    createOrder.totalPrice = totalPrice;
+    console.log('createOrderDto', createOrderDto);
 
-      const orderProducts = await products.map((product) => ({
-        orderId: saveOrder.id,
-        productId: product.id,
-        product_image: product.product_image,
-        quantity: productList.get(product.id),
-      }));
+    const saveOrder = await this.OrderRepository.save(createOrder);
+    const orderProducts = await products.map((product) => ({
+      orderId: saveOrder.id,
+      productId: product.id,
+      product_image: product.product_image,
+      quantity: productList.get(product.id),
+    }));
 
-      await this.ordersProductsRepository.save(orderProducts);
+    await this.ordersProductsRepository.save(orderProducts);
 
-      return { userId, orderProducts };
-    }
+    return { userId, orderProducts };
   }
 
   private getQtyProductById(productsDto: Array<createOrderProductDto>) {
