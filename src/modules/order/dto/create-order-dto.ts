@@ -13,7 +13,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-export class ProductDto {
+export class createOrderProductDto {
   @IsNotEmpty()
   id: string;
 
@@ -24,17 +24,16 @@ export class ProductDto {
 }
 
 export class createOrderDto {
+  @IsNumber()
   @IsNotEmpty({ message: 'customerId is not empty' })
   userId: number;
 
+  @IsNumber()
   @IsOptional({ message: 'productId is not empty' })
   productId: number;
-
-  @IsNotEmpty()
-  quantity: number;
 
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
-  products: ProductDto[];
+  products: createOrderProductDto[];
 }

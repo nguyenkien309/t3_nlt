@@ -20,18 +20,16 @@ export class OrderEntity extends DateAudit {
   @Column()
   userId: number;
 
-  //   @Column()
-  //   productId: number;
+  @Column({ name: 'total', default: 0, nullable: true })
+  totalPrice: number;
 
-  //   @Column()
-  //   quantity: number;
-
-  //   @ManyToOne(() => UserEntity, (user) => user.order, { eager: true })
-  //   user: UserEntity[];
   @Column({ name: 'status', default: 'pending', nullable: true })
   status: string;
 
-  @OneToMany(() => OrderProductEntity, (OrderProducts) => OrderProducts.order)
+  @OneToMany(() => OrderProductEntity, (OrderProducts) => OrderProducts.order, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   OrderProducts: OrderProductEntity[];
 
   constructor(partial: Partial<OrderEntity>) {

@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, In, Repository } from 'typeorm';
 import { ProductService } from '../product/product.service';
 import { UserService } from '../user/user.service';
-import { createOrderDto } from './dto/create-order-dto';
+import { createOrderDto, createOrderProductDto } from './dto/create-order-dto';
 import { OrderEntity } from './entities/order.entity';
 import { OrderProductEntity } from './entities/orders-products.entity';
 
@@ -21,50 +21,60 @@ export class OrderService {
 
   async create(userId: number, createOrderDto: createOrderDto) {
     const productsDto = createOrderDto.products;
-    // createOrderDto.customerId = userId;
     const userExists = await this.userService.findOne(userId);
 
     const productsIds = productsDto.map((productId) => productId.id);
-    const productsQTY = productsDto.map((productId) => productId.quantity);
-    // const productsMap = this.createProductQuantityMap(productsDto);
+    const productQTY = productsDto.map((productId) => productId.quantity);
+    const productList = this.getQtyProductById(productsDto);
+    const getAll = productsDto.map((productId) => productId);
+    const totalPrice = productQTY.reduce((a, b) => a + b);
+    console.log('totalPrice', totalPrice);
 
     const products = await this.productService.findProductsByIds(productsIds);
 
     const createOrder = new OrderEntity(createOrderDto);
     createOrder.userId = userId;
-    // const order = await this.OrderRepository.create({
-    //   ...createOrderDto,
-    //   userId,
-    // });
+    createOrder.totalPrice = totalPrice;
     console.log('createOrderDto', createOrderDto);
 
     const saveOrder = await this.OrderRepository.save(createOrder);
-
-    const orderProducts = products.map((product) => ({
+    const orderProducts = await products.map((product) => ({
       orderId: saveOrder.id,
       productId: product.id,
+      product_image: product.product_image,
+      quantity: productList.get(product.id),
     }));
+
     await this.ordersProductsRepository.save(orderProducts);
 
-    return { saveOrder, product: { orderProducts } };
+    return { userId, orderProducts };
   }
 
-  async update(prdId: any, updateOrderDto: UpdateOrderDto) {
-    const order = await this.OrderRepository.preload({
-      id: prdId,
-      ...updateOrderDto,
+  private getQtyProductById(productsDto: Array<createOrderProductDto>) {
+    const listProducts = new Map();
+
+    for (const product of productsDto) {
+      const { id, quantity } = product;
+
+      listProducts.set(id, quantity);
+    }
+
+    return listProducts;
+  }
+
+  async update(orderId: number, updateOrderDto: UpdateOrderDto) {
+    const exist = this.OrderRepository.findOne({ where: { id: orderId } });
+
+    return await this.OrderRepository.update(orderId, {
+      status: updateOrderDto.status,
     });
-
-    return this.OrderRepository.save(order);
   }
 
-  async deleteOrderPrd(prdId: number) {
+  async deleteOrderPrd(prdId: number): Promise<void> {
     return this.OrderRepository.manager.transaction(async (manager) => {
-      const order = await manager.find(OrderEntity, {
-        where: { id: prdId },
-      });
-      //   await order.save();
+      await manager.delete(OrderEntity, { id: prdId });
       await manager.delete(OrderProductEntity, { orderId: prdId });
     });
+    // await this.ordersProductsRepository.delete({ orderId: prdId });
   }
 }

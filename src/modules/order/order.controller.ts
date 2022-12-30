@@ -36,10 +36,10 @@ export class OrderController {
 
   @Post('update/:id')
   async updateProduct(
-    @Param('id') productId: number,
+    @Param('id') orderProductId: number,
     @Body() updateOrderDto: UpdateOrderDto,
   ) {
-    return this.orderService.update(productId, updateOrderDto);
+    return this.orderService.update(orderProductId, updateOrderDto);
   }
 
   @Delete(':id')

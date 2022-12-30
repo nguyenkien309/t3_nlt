@@ -8,17 +8,25 @@ export class OrderProductEntity extends DateAudit {
   @PrimaryColumn()
   orderId: number;
 
-  @ManyToOne(() => OrderEntity, (order) => order.OrderProducts)
+  @ManyToOne(() => OrderEntity, (order) => order.OrderProducts, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'orderId' })
   order: OrderEntity;
 
   @PrimaryColumn()
   productId: number;
 
-  @ManyToOne(() => ProductEntity, (product) => product.OrderProducts)
+  @ManyToOne(() => ProductEntity, (product) => product.OrderProducts, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'productId' })
   product: ProductEntity;
 
-  //   @Column()
-  //   quantity: number;
+  @Column({ name: 'name', nullable: true })
+  name: number;
+
+  @Column({ name: 'quantity', nullable: true })
+  quantity: number;
 }
