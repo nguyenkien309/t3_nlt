@@ -1,3 +1,4 @@
+import { ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthService } from './auth.service';
@@ -21,6 +22,7 @@ import { HttpStatus } from '@nestjs/common';
 import { LoginRequestDto } from './dto/login-request.dto';
 import { AuthUser } from 'src/decorator/auth.user.decorator';
 
+@ApiTags('v1/auth')
 @Controller('v1/auth')
 export class AuthController {
   constructor(

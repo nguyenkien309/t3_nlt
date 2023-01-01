@@ -5,6 +5,8 @@ import helmet from 'helmet';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as dotenv from 'dotenv';
 import { ConfigService } from '@nestjs/config';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+
 dotenv.config();
 
 async function bootstrap() {
@@ -18,6 +20,16 @@ async function bootstrap() {
   app.enableCors({
     origin: '*',
   });
+
+  const config = new DocumentBuilder()
+    .setTitle('API')
+    .setDescription('API docs')
+    .setVersion('1.0')
+    .addTag('Document For API')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document);
 
   const port = configService.get<string>('PORT');
   await app.listen(port, () => {

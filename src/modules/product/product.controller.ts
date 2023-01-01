@@ -1,3 +1,4 @@
+import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UserService } from 'src/modules/user/user.service';
 import {
@@ -23,6 +24,7 @@ import { AuthUser } from 'src/decorator/auth.user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateProductDto } from './dto/update-product-entity.dto';
 
+@ApiTags('v1/product')
 @Controller('v1/product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}

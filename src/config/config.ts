@@ -31,12 +31,13 @@ export const JWT_REFRESH_TOKEN_EXPIRATION =
   process.env.JWT_REFRESH_TOKEN_EXPIRATION;
 
 // DATABASE
-export const DATABASE_CONNECTION = process.env.DATABASE_CONNECTION || 'mysql';
+export const DATABASE_CONNECTION =
+  process.env.DATABASE_CONNECTION || 'postgres';
 export const DATABASE_HOST = process.env.DATABASE_HOST || 'localhost';
-export const DATABASE_PORT = parseInt(process.env.DATABASE_PORT, 10) || 3306;
-export const DATABASE_USERNAME = process.env.DATABASE_USERNAME || 'root';
-export const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD || 'password';
-export const DATABASE_DB_NAME = process.env.DATABASE_DB_NAME || 'nest-starter';
+export const DATABASE_PORT = parseInt(process.env.DATABASE_PORT, 10) || 5432;
+export const DATABASE_USERNAME = process.env.DATABASE_USERNAME || 'postgres';
+export const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD || 'kiendzpro21';
+export const DATABASE_DB_NAME = process.env.DATABASE_DB_NAME || 't3_nlt';
 
 // FILE
 export const MAX_FILE_SIZE = parseInt(process.env.MAX_FILE_SIZE, 10);

@@ -1,3 +1,4 @@
+import { ApiTags } from '@nestjs/swagger';
 import { OrderService } from './order.service';
 import {
   Controller,
@@ -20,6 +21,7 @@ import { AuthUserDto } from 'src/utils/types/i.auth.user';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateOrderDto } from './dto/update-order.dto';
 
+@ApiTags('v1/order')
 @Controller('/v1/order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}

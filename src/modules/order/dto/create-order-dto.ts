@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   ArrayMinSize,
   IsArray,
@@ -14,9 +15,11 @@ import {
 } from 'class-validator';
 
 export class createOrderProductDto {
+  @ApiProperty()
   @IsNotEmpty()
   id: string;
 
+  @ApiProperty()
   @IsNumber()
   @IsInt()
   @Min(1)
@@ -24,14 +27,17 @@ export class createOrderProductDto {
 }
 
 export class createOrderDto {
+  @ApiProperty()
   @IsNumber()
   @IsNotEmpty({ message: 'customerId is not empty' })
   userId: number;
 
+  @ApiProperty()
   @IsNumber()
   @IsOptional({ message: 'productId is not empty' })
   productId: number;
 
+  @ApiProperty()
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
