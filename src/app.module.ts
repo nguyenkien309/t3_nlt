@@ -7,6 +7,13 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { ProductModule } from './modules/product/product.module';
 import { OrderModule } from './modules/order/order.module';
+import { NodeMailerModule } from './modules/node-mailer/node-mailer.module';
+import { BullModule } from '@nestjs/bull';
+import { QueueModule } from './modules/queue/queue.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import * as dotenv from 'dotenv';
+import { RedisModule } from './modules/redis/redis.module';
+dotenv.config();
 
 @Module({
   imports: [
@@ -16,6 +23,19 @@ import { OrderModule } from './modules/order/order.module';
     ProductModule,
     AuthModule,
     UploadFileModule,
+    NodeMailerModule,
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        redis: {
+          host: config.get<string>('REDIS_HOST'),
+          port: config.get<number>('REDIS_PORT'),
+        },
+      }),
+    }),
+    QueueModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],
