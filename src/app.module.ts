@@ -23,7 +23,6 @@ dotenv.config();
     ProductModule,
     AuthModule,
     UploadFileModule,
-    NodeMailerModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -36,6 +35,7 @@ dotenv.config();
     }),
     QueueModule,
     RedisModule,
+    NodeMailerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

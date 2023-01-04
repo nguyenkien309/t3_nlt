@@ -14,6 +14,6 @@ export class NodeMailerController {
 
   @Get()
   async test(@Query('email') email: string) {
-    return await this.nodeMailerService.sendMail(email);
+    return await this.nodeMailerService.sendConfirmEmail(email);
   }
 }

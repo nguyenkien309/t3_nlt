@@ -3,23 +3,10 @@ import { NodeMailerService } from './node-mailer.service';
 import { NodeMailerController } from './node-mailer.controller';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-
-// @Module({
-// imports: [
-//   MailerModule.forRoot({
-//     transport: {
-//       host: 'smtp.sendgrid.net',
-//       port: 465,
-//       auth: {
-//         user: 'apikey',
-//         pass: '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',
-//         //   user: 'apikey',
-//         //   pass: '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',
-//       },
-//     },
-//   }),
-// ],
-
+import { BullModule } from '@nestjs/bull';
+import { NodeMailerConsumer } from './node-mailer.consumer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { join } from 'path';
 @Global()
 @Module({
   imports: [
@@ -28,7 +15,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         transport: {
-          // name: config.get<string>('NODEMAILER_HOST'),
           host: config.get<string>('NODEMAILER_HOST'),
           secure: config.get<boolean>('NODEMAILER_SECURE'),
           port: config.get<number>('NODEMAILER_PORT') || 465,
@@ -39,14 +25,31 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         },
         defaults: {
           from: `"No Reply" <no-reply@localhost>' <${config.get<string>(
-            'NODEMAILER_FROM',
+            'NODEMAILER_USER',
           )}>`,
         },
-        preview: false, // true
+        template: {
+          dir: join(__dirname, './../../../public/templates'),
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
+      }),
+    }),
+    BullModule.registerQueueAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      name: 'QueueMail',
+      useFactory: (config: ConfigService) => ({
+        redis: {
+          host: config.get<string>('REDIS_HOST'),
+          port: config.get<number>('REDIS_PORT'),
+        },
       }),
     }),
   ],
   controllers: [NodeMailerController],
-  providers: [NodeMailerService],
+  providers: [NodeMailerService, NodeMailerConsumer],
 })
 export class NodeMailerModule {}
