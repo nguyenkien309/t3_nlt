@@ -9,6 +9,8 @@ import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RegisterRequestDto } from '../auth/dto/register-request.dto';
 import { UploadService } from '../upload-file/upload-file.service';
+import { PaginationQueryDto } from 'src/utils/dto/paginate.dto';
+
 @Injectable()
 export class ProductService {
   constructor(
@@ -62,5 +64,26 @@ export class ProductService {
       .getMany();
 
     return products;
+  }
+
+  async findProduct(productId) {
+    return this.ProductRepository.find({ where: { id: productId } });
+  }
+
+  async getProductsPaginate(query: PaginationQueryDto) {
+    const limit = query.limit ? query.limit : 5;
+    const page = query.page ? query.page : 0;
+    const keyword = query.keyword ? query.keyword : null;
+    const qb = this.ProductRepository.createQueryBuilder('products');
+    qb.andWhere('products.deleted = false');
+    qb.skip(limit * page)
+      .take(limit)
+      .orderBy('products.price', 'DESC');
+    if (keyword) {
+      qb.andWhere('products.name LIKE :name', { name: `%${keyword}%` });
+    }
+    const [products, total] = await qb.getManyAndCount();
+
+    return { total, products };
   }
 }
