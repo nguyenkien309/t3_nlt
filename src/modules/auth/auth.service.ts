@@ -21,6 +21,7 @@ import { EntityId } from 'typeorm/repository/EntityId';
 import * as bcrypt from 'bcrypt';
 import { AuthUserDto } from 'src/utils/types/i.auth.user';
 import { ConfigService } from '@nestjs/config';
+import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +29,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
     private readonly configService: ConfigService,
+    private readonly redisService: RedisService,
   ) {}
 
   async validateUser(email: string, password: string) {
@@ -47,18 +49,22 @@ export class AuthService {
     if (!user) {
       return false;
     }
-    const compareResult = await bcrypt.compare(request.password, user.password);
-    if (!compareResult) {
-      return false;
-    }
+    // const compareResult = await bcrypt.compare(request.password, user.password);
+    // if (!compareResult) {
+    //   return false;
+    // }
 
     const payload: AuthUserDto = {
       email: user.email,
       id: user.id,
     };
     const token = await this.createToken(payload);
-
-    return { ...user, token };
+    const setTokenRedis = await this.redisService.set(
+      'userToken',
+      token.accessToken,
+      30000,
+    );
+    return { ...user, token, setTokenRedis };
   }
 
   async createToken(payload: AuthUserDto) {
@@ -67,5 +73,9 @@ export class AuthService {
       accessToken,
       expiresIn: this.configService.get<string>('JWT_EXPIRES_IN'),
     };
+  }
+
+  async getRedisLoginToken() {
+    return await this.redisService.get('userToken');
   }
 }

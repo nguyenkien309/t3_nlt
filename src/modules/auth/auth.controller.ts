@@ -17,6 +17,8 @@ import {
   UploadedFile,
   Param,
   BadRequestException,
+  CacheInterceptor,
+  Query,
 } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 import { LoginRequestDto } from './dto/login-request.dto';
@@ -43,5 +45,12 @@ export class AuthController {
     const user = await this.userService.register(registerRequestDto);
 
     return user;
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('/redis-token')
+  async redisLogin() {
+    const data = await this.authService.getRedisLoginToken();
+    return data;
   }
 }
