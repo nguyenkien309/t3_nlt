@@ -38,15 +38,7 @@ import { join } from 'path';
       }),
     }),
     BullModule.registerQueueAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
       name: 'QueueMail',
-      useFactory: (config: ConfigService) => ({
-        redis: {
-          host: config.get<string>('REDIS_HOST'),
-          port: config.get<number>('REDIS_PORT'),
-        },
-      }),
     }),
   ],
   controllers: [NodeMailerController],
