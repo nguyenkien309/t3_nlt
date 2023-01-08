@@ -4,6 +4,7 @@ import { Module, CacheModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductService } from './product.service';
 import { UploadService } from '../upload-file/upload-file.service';
+import { UploadFileController } from '../upload-file/upload-file.controller';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { UploadService } from '../upload-file/upload-file.service';
     }),
   ],
   controllers: [ProductController],
-  providers: [ProductService, UploadService],
+  providers: [ProductService, UploadFileController, UploadService],
   exports: [ProductService],
 })
 export class ProductModule {}

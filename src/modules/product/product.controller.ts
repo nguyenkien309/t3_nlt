@@ -29,25 +29,29 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateProductDto } from './dto/update-product-entity.dto';
 import { Cache } from 'cache-manager';
 import { PaginationQueryDto } from 'src/utils/dto/paginate.dto';
+import { UploadService } from '../upload-file/upload-file.service';
+import { UploadFileController } from '../upload-file/upload-file.controller';
 
 @ApiTags('v1/product')
 @Controller('v1/product')
 export class ProductController {
   constructor(
     private readonly productService: ProductService,
+    private readonly uploadService: UploadService,
+    private readonly uploadController: UploadFileController,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  //   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('product_image'))
   @HttpCode(HttpStatus.OK)
   @Post('/create')
   async create(
-    // @AuthUser() authUser: AuthUserDto,
     @Body() createProductDto: CreateProductDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return await this.productService.createProduct(createProductDto, file);
+    const upload = await this.uploadController.uploadFile(file);
+    createProductDto.product_image = upload;
+    return await this.productService.createProduct(createProductDto);
   }
 
   @UseInterceptors(FileInterceptor('file'))
@@ -66,7 +70,7 @@ export class ProductController {
 
   @Delete(':id')
   async deleteProduct(@Param('id') productId: number) {
-    return await this.productService.deleteProduct(productId);
+    return await this.productService.softDelete(productId);
   }
 
   @HttpCode(HttpStatus.OK)

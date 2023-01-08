@@ -19,16 +19,8 @@ export class ProductService {
     private readonly uploadService: UploadService,
   ) {}
 
-  async createProduct(
-    createProductDto: CreateProductDto,
-    file: Express.Multer.File,
-  ) {
+  async createProduct(createProductDto: CreateProductDto) {
     const createproduct = new ProductEntity(createProductDto);
-    if (file) {
-      const filepath = await this.uploadService.createFile(file);
-      createproduct.product_image = filepath;
-    }
-
     await this.ProductRepository.save(createproduct);
     return this.ProductRepository.findBy({ id: createproduct.id });
   }
@@ -56,6 +48,10 @@ export class ProductService {
 
   async deleteProduct(productId: number) {
     return await this.ProductRepository.delete(productId);
+  }
+
+  async softDelete(productId: number) {
+    return await this.ProductRepository.update(productId, { deleted: true });
   }
 
   async findProductsByIds(productIds: Array<string>) {
