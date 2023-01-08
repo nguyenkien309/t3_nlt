@@ -20,9 +20,9 @@ dotenv.config();
     DatabaseModule,
     UserModule,
     OrderModule,
+    UploadFileModule,
     ProductModule,
     AuthModule,
-    UploadFileModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

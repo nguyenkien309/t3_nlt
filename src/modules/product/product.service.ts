@@ -21,24 +21,16 @@ export class ProductService {
 
   async createProduct(createProductDto: CreateProductDto) {
     const createproduct = new ProductEntity(createProductDto);
+
     await this.ProductRepository.save(createproduct);
     return this.ProductRepository.findBy({ id: createproduct.id });
   }
 
-  async updateProduct(
-    productId: number,
-    updateProductDto: UpdateProductDto,
-    file: Express.Multer.File,
-  ) {
+  async updateProduct(productId: number, updateProductDto: UpdateProductDto) {
     const exist = await this.ProductRepository.findOne({
       where: { id: productId },
     });
     if (exist) {
-      if (file) {
-        const filepath = await this.uploadService.createFile(file);
-        exist.product_image = filepath;
-      }
-
       exist.name = updateProductDto.name;
       exist.description = updateProductDto.description;
       await this.ProductRepository.save(exist);

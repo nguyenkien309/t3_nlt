@@ -37,35 +37,23 @@ import { UploadFileController } from '../upload-file/upload-file.controller';
 export class ProductController {
   constructor(
     private readonly productService: ProductService,
-    private readonly uploadService: UploadService,
-    private readonly uploadController: UploadFileController,
+    // private readonly uploadService: UploadService,
+    // private readonly uploadController: UploadFileController,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  @UseInterceptors(FileInterceptor('product_image'))
   @HttpCode(HttpStatus.OK)
   @Post('/create')
-  async create(
-    @Body() createProductDto: CreateProductDto,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    const upload = await this.uploadController.uploadFile(file);
-    createProductDto.product_image = upload;
+  async create(@Body() createProductDto: CreateProductDto) {
     return await this.productService.createProduct(createProductDto);
   }
 
-  @UseInterceptors(FileInterceptor('file'))
   @Post('/update/:id')
   async updateProduct(
     @Param('id') productId: number,
     @Body() updateproductDto: UpdateProductDto,
-    @UploadedFile() file: Express.Multer.File,
   ) {
-    return await this.productService.updateProduct(
-      productId,
-      updateproductDto,
-      file,
-    );
+    return await this.productService.updateProduct(productId, updateproductDto);
   }
 
   @Delete(':id')

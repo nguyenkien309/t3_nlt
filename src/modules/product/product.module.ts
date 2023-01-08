@@ -5,16 +5,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductService } from './product.service';
 import { UploadService } from '../upload-file/upload-file.service';
 import { UploadFileController } from '../upload-file/upload-file.controller';
+import { UploadFileModule } from '../upload-file/upload-file.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ProductEntity]),
+    UploadFileModule,
     CacheModule.register({
       ttl: 100000,
     }),
   ],
   controllers: [ProductController],
-  providers: [ProductService, UploadFileController, UploadService],
+  providers: [ProductService, UploadService],
   exports: [ProductService],
 })
 export class ProductModule {}

@@ -24,7 +24,4 @@ export class CreateProductDto {
   @ApiProperty()
   @IsOptional()
   product_image: string;
-
-  // @IsOptional()
-  // product_images?: string[];
 }
