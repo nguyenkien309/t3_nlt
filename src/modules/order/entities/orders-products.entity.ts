@@ -25,7 +25,7 @@ export class OrderProductEntity extends DateAudit {
   product: ProductEntity;
 
   @Column({ name: 'name', nullable: true })
-  name: number;
+  name: string;
 
   @Column({ name: 'quantity', nullable: true })
   quantity: number;

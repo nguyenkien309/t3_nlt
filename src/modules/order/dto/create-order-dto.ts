@@ -28,6 +28,10 @@ export class createOrderProductDto {
 
 export class createOrderDto {
   @ApiProperty()
+  @IsNotEmpty({ message: 'name is not empty' })
+  name: string;
+
+  @ApiProperty()
   @IsNumber()
   @IsNotEmpty({ message: 'customerId is not empty' })
   userId: number;
